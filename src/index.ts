@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { createReadStream } from 'fs';
+import { Readable } from 'stream';
 
 import error from './middlewares/error';
 import requestLogger from './middlewares/requestLogger';
@@ -19,11 +19,12 @@ app.use(async (ctx) => {
   const width = parseInt(data.width, 10);
   const height = parseInt(data.height, 10);
 
-  await GeneratePNG(width, height);
-
-  ctx.body = createReadStream('./static/sample.png');
   ctx.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-  ctx.attachment('sample.png');
+  const s = new Readable();
+  s.push(await GeneratePNG(width, height));
+  s.push(null);
+  ctx.body = s;
+  ctx.attachment(`${width}x${height}.png`);
 
   console.log('Done');
 });
