@@ -6,6 +6,7 @@ import error from './middlewares/error';
 import requestLogger from './middlewares/requestLogger';
 
 import GeneratePNG from './png';
+import { WidthHeightRequest } from './types/WidthHeightRequest';
 
 const app = new Koa();
 
@@ -14,8 +15,9 @@ app.use(error);
 app.use(requestLogger);
 
 app.use(async (ctx) => {
-  const width = parseInt(ctx.request.body.width, 10);
-  const height = parseInt(ctx.request.body.height, 10);
+  const data = <WidthHeightRequest><unknown>ctx.request.body;
+  const width = parseInt(data.width, 10);
+  const height = parseInt(data.height, 10);
 
   await GeneratePNG(width, height);
 
