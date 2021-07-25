@@ -19,7 +19,7 @@ app.use(async (ctx) => {
   const width = parseInt(data.width, 10);
   const height = parseInt(data.height, 10);
 
-  ctx.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+  ctx.set('Access-Control-Allow-Origin', `http://localhost:${process.env.FRONTEND_PORT}`);
   const s = new Readable();
   s.push(await GeneratePNG(width, height));
   s.push(null);
@@ -29,4 +29,4 @@ app.use(async (ctx) => {
   console.log('Done');
 });
 
-app.listen(8081);
+app.listen(process.env.BACKEND_PORT);
